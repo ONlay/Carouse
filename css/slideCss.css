@@ -1,0 +1,76 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+a{
+    text-decoration: none;
+}
+.container{
+    position: relative;
+    width: 490px;
+    height: 170px;
+    margin: 100px auto;
+    box-shadow: 0 0 5px green;
+    overflow: hidden;
+}
+.wrap{
+    position: absolute;
+    width: 3440px;
+    height: 170px;
+    z-index: 1;
+    cursor: pointer;
+}
+.container .wrap img{
+    float: left;
+    width: 490px;
+    height: 170px;
+}
+/*焦点*/
+.container .buttons{
+    position: absolute;
+    right: 25px;
+    bottom: 5px;
+    width: 150px;
+    height: 25px;
+    z-index: 2;
+}
+.container .buttons span{
+    margin-left: 5px;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: green;
+    text-align: center;
+    color: #fff;
+    cursor: pointer;
+}
+.container .buttons span.on{
+    background-color: red;
+}
+/*左右箭头*/
+.container .arrow{
+    position: absolute;
+    top: 25%;
+    color: green;
+    width: 60px;
+    height: 60px;
+    font-size: 50px;
+    line-height: 60px;
+    text-align: center;
+    border-radius: 50%;
+    z-index: 2;
+    display: none;
+}
+.container .arrow_left{
+    left: 10px;
+}
+.container .arrow_right{
+    right: 10px;
+}
+.container:hover .arrow{
+    display: block;
+}
+.container .arrow:hover{
+    background-color: rgba(0,0,0,0.2);
+}

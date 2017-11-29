@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>轮播图</title>
+    <style type="text/css" rel="stylesheet">
+        a{
+            text-decoration: none;
+        }
+
+        .container{
+            position: relative;
+            width: 490px;
+            height: 170px;
+            margin: 200px auto;
+            box-shadow: 0 0 5px green;
+            overflow: hidden;
+        }
+        .wrap{
+            position: absolute;
+            width: 3430px;
+            height: 170px;
+            z-index: 1;
+            cursor: pointer;
+        }
+        .wrap img{
+            float: left;
+            width: 490px;
+            height: 170px;
+        }
+        /*焦点*/
+        .buttons{
+            position: absolute;
+            width: 100px;
+            height: 30px;
+            left: 42%;
+            bottom: 5px;
+            z-index: 2;
+        }
+        .buttons span{
+            margin-left: 5px;
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: green;
+            cursor: pointer;
+        }
+        .buttons span.on{
+            background-color: red;
+        }
+        /*左右箭头*/
+        .container .arrow{
+            position: absolute;
+            z-index: 2;
+            width: 60px;
+            height: 60px;
+            top: 25%;
+            font-size: 40px;
+            color: green;
+            text-align: center;
+            border-radius: 50%;
+            display: none;
+        }
+        .container .prev{
+            left: 10px;
+        }
+        .container .next{
+            right: 10px;
+        }
+        .container:hover .arrow{
+            display: block;
+        }
+        .container .arrow:hover{
+            background-color: rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+    </style>
+
+</head>
+<body>
+<div class="container">
+    <div class="wrap" style="left: -490px;">
+        <img src="images/5.jpg">
+        <img src="images/1.jpg">
+        <img src="images/2.jpg">
+        <img src="images/3.jpg">
+        <img src="images/4.jpg">
+        <img src="images/5.jpg">
+        <img src="images/1.jpg">
+    </div>
+    <div class="buttons">
+        <span index="1" class="on"></span>
+        <span index="2"></span>
+        <span index="3"></span>
+        <span index="4"></span>
+        <span index="5"></span>
+    </div>
+    <a class="arrow prev">&lt;</a>
+    <a class="arrow next">&gt;</a>
+
+</div>
+<script type="text/javascript">
+    /*箭头控制*/
+    var wrap = document.getElementsByClassName('wrap')[0];
+    var prev = document.getElementsByClassName('prev')[0];
+    var next = document.getElementsByClassName('next')[0];
+    function animate(offset){
+        var inteval = 10;
+        var speed = offset/70; //每次的位移，分母越大约流畅
+        animated = true; //更改全局变量，防止跳图
+        var newLeft = parseInt(wrap.style.left) + offset;
+
+        function go(){
+            if((speed > 0 && parseInt(wrap.style.left) < newLeft) || (speed < 0 && parseInt(wrap.style.left) > newLeft)){
+                wrap.style.left = parseInt(wrap.style.left) + speed + 'px';
+                setTimeout(go,inteval);  //递归函数
+            }else{
+                animated = false;
+                wrap.style.left = newLeft + 'px';
+                if(newLeft > -490){
+                    wrap.style.left = -2450 + 'px';
+                }
+                if(newLeft < -2450){
+                    wrap.style.left = -490 + 'px';
+                }
+            }
+        }
+        go();
+    }
+    prev.onclick = function () {
+        /*添加一个if判断index为1时，如果继续往前滚的话就让index返回第五个span
+                但是当快速点击arrow时会出现一种span点亮延迟的情况。可以尝试把判断index是否大于1或小于5的情况放进
+                判断是否animated的if语句中，先判断能不能点击，再点亮。
+                */
+        /*var newLeft = parseInt(wrap.style.left) + 490;
+        wrap.style.left = newLeft + 'px';*/
+        if(!animated){
+            if(index === 1){
+                index = 5;
+            }else{
+                index -= 1;
+            }
+            showButton();
+            animate(490);
+        }
+
+    };
+    next.onclick = function () {
+       /* var newLeft = parseInt(wrap.style.left) - 490;
+        wrap.style.left = newLeft + 'px';*/
+       if(!animated){/*全局变量animated=false，那么！animated=true*/
+           if(index === 5){
+               index = 1;
+           }else{
+               index += 1;
+           }
+           showButton();
+           animate(-490);
+       }
+
+    };
+    /*焦点的跟随*/
+    var buttons = document.getElementsByClassName('buttons')[0].getElementsByTagName('span');
+    var index = 1;
+    var animated = false;
+    function showButton(){
+        for(var i = 0; i < buttons.length; i++){
+            buttons[i].className = "";
+        }
+        buttons[index - 1].className = "on";
+    }
+    for(var i = 0; i < buttons.length; i ++){
+        buttons[i].onclick = function(){
+            if(this.className === 'on'){
+                return;
+            }
+            var myIndex = parseInt(this.getAttribute('index'));
+            var offset = (myIndex - index)*(-490);
+            if(!animated){/*又出现了这个animated，在此意思是如果animate()执行过程中，animated=true，那么animate()不能再次被调用*/
+                animate(offset);
+            }
+            index = myIndex;
+            showButton();
+        }
+    }
+    /*定时器*/
+    var container = document.getElementsByClassName('container')[0];
+    var timer = null;
+    function play(){
+        timer = setInterval(function(){
+            next.onclick();
+        },2000);
+    }
+    play();
+    container.onmouseover = function(){
+        clearInterval(timer);
+    };
+    container.onmouseout = play;
+</script>
+</body>
+</html>
